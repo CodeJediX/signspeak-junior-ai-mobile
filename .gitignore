@@ -1,0 +1,15 @@
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs and local scratch files
+*.log
+tmp/
+temp/
+
+# Node dependencies if the web UI is previewed with local tooling
+node_modules/
+package-lock.json
+
