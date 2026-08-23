@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#075ff0" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="SignSpeak Junior AI - on-device intelligent communication and speech support for children." />
+  <link rel="stylesheet" href="./styles.css?v=2.0.0" />
+  <title>SignSpeak Junior</title>
+</head>
+<body class="is-loading">
+  <div id="preloader" class="preloader" role="status" aria-label="Loading SignSpeak Junior">
+    <div class="preloader-inner">
+      <img src="./assets/signspeak-junior-logo.png" alt="SignSpeak Junior" class="preloader-logo" />
+      <div class="preloader-progress" aria-hidden="true"><span></span></div>
+      <p>Tap · Build · Speak</p>
+    </div>
+  </div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-stage" aria-label="SignSpeak Junior">
+        <span class="brand-orbit brand-orbit-one" aria-hidden="true"></span>
+        <span class="brand-orbit brand-orbit-two" aria-hidden="true"></span>
+        <div class="brand-logo-frame">
+          <img src="./assets/signspeak-junior-logo.png" alt="SignSpeak Junior" class="brand-logo" />
+        </div>
+        <div class="brand-copy">
+          <span class="brand-kicker">CHILD COMMUNICATION STUDIO</span>
+          <strong>Tap · Build · Speak</strong><span class="ai-brand-badge">✦ AI POWERED</span>
+          <span>Choose a word, make a sentence, hear it clearly.</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="fullscreenBtn" class="icon-button" aria-label="Full screen" title="Full screen"><span aria-hidden="true">⛶</span><small>Full screen</small></button>
+        <button id="parentBtn" class="icon-button parent-action" aria-label="Parent profile and settings" title="Parent profile & settings"><span aria-hidden="true">⚙</span><small>Parent</small></button>
+      </div>
+    </header>
+
+    <section class="kid-guide" aria-label="How to use SignSpeak Junior">
+      <div><span class="guide-number">1</span><span class="guide-icon">👆</span><strong>Tap a word</strong></div>
+      <span class="guide-arrow" aria-hidden="true">›</span>
+      <div><span class="guide-number">2</span><span class="guide-icon">🧩</span><strong>Build a sentence</strong></div>
+      <span class="guide-arrow" aria-hidden="true">›</span>
+      <div><span class="guide-number">3</span><span class="guide-icon">🔊</span><strong>Press Speak</strong></div>
+    </section>
+
+    <section class="sentence-panel" aria-label="Sentence builder">
+      <div class="sentence-heading">
+        <div><span class="eyebrow">MY SENTENCE</span><div id="sentenceText" class="sentence-text" aria-live="polite">Tap a word below to build your sentence</div></div>
+        <button id="speakSentenceBtn" class="speak-main" disabled><span class="speaker-orb">🔊</span><span>Speak</span></button>
+      </div>
+      <div id="sentenceStrip" class="sentence-strip" role="list" aria-label="Selected words"><div class="sentence-placeholder">👆 Tap a word card below to start talking.</div></div>
+      <div class="sentence-tools">
+        <button id="undoBtn" disabled>↶ Undo</button>
+        <button id="stopBtn">■ Stop voice</button>
+        <button id="clearBtn" disabled>⌫ Clear</button>
+      </div>
+      <div id="suggestions" class="suggestions" aria-label="Suggested next words" hidden></div>
+    </section>
+
+    <section id="aiPanel" class="ai-panel" aria-label="AI communication helper">
+      <div class="ai-panel-head">
+        <div class="ai-orb" aria-hidden="true"><span>✦</span></div>
+        <div class="ai-title-copy">
+          <span class="eyebrow">ON-DEVICE AI AGENT</span>
+          <div class="ai-title-line"><h2>Junior AI Helper</h2><span id="aiModelState" class="ai-model-state">AI ready</span></div>
+          <p id="aiStatusText">Choose a word and I will understand the message and suggest what may come next.</p>
+        </div>
+      </div>
+      <div id="aiUnderstanding" class="ai-understanding" hidden>
+        <span class="ai-understanding-icon" aria-hidden="true">🧠</span>
+        <div><small>I understand this as</small><strong id="aiIntentLabel">Building a message</strong></div>
+        <span id="aiConfidence" class="ai-confidence"></span>
+      </div>
+      <div class="ai-suggestion-area">
+        <div class="ai-suggestion-title"><span>💡 Smart next words</span><small>Tap a suggestion to add it</small></div>
+        <div id="aiSuggestionChips" class="ai-suggestion-chips"><span class="ai-empty-hint">Start with a word such as <b>I</b>, <b>want</b>, <b>feel</b> or <b>where</b>.</span></div>
+      </div>
+      <div class="ai-actions">
+        <button id="aiAddBestBtn" class="ai-action primary-soft" disabled>＋ Add best suggestion</button>
+        <button id="aiFixOrderBtn" class="ai-action" disabled>✨ Fix word order</button>
+      </div>
+      <div id="aiSafetyNote" class="ai-safety-note" hidden><span>🛟</span><div><strong>Important message detected</strong><small>The AI is prioritizing help and safety words.</small></div></div>
+      <p class="ai-privacy">🔒 The AI model runs inside the app. The child’s sentence is not sent to a cloud AI service.</p>
+    </section>
+
+    <section id="quickPhrases" class="quick-phrases" aria-label="Quick phrases"></section>
+
+    <section class="library-panel">
+      <div class="library-head">
+        <div><span class="eyebrow" id="visualSectionLabel">WORD CARDS</span><h2>Choose a word</h2><p class="library-hint">Tap any card to add it to your sentence.</p></div>
+        <div class="library-controls">
+          <div id="visualModeSwitch" class="visual-mode-switch is-picture" role="group" aria-label="Word card view">
+            <span class="visual-slider" aria-hidden="true"></span>
+            <button id="emojiViewBtn" type="button" data-visual-mode="emoji" aria-pressed="false"><span aria-hidden="true">😊</span> Emoji</button>
+            <button id="pictureViewBtn" type="button" data-visual-mode="picture" aria-pressed="true"><span aria-hidden="true">🖼️</span> Pictures</button>
+          </div>
+          <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" placeholder="Find a word…" aria-label="Find a word" /><button id="clearSearchBtn" aria-label="Clear search" hidden>×</button></label>
+        </div>
+      </div>
+      <div id="categoryTabs" class="category-tabs" role="tablist" aria-label="Word categories"></div>
+      <div id="wordGrid" class="word-grid"></div>
+    </section>
+
+    <footer><span>SignSpeak Junior</span><span>On-device AI · picture/emoji communication · not a therapy replacement</span></footer>
+  </main>
+
+  <div id="pinModal" class="modal-backdrop" role="presentation" hidden>
+    <form id="pinForm" class="modal compact">
+      <button type="button" class="modal-close" data-close="pinModal" aria-label="Close">×</button>
+      <span class="eyebrow">PARENT ACCESS</span><h2>Enter PIN</h2>
+      <p>The default PIN is <strong>1234</strong>. Change it in Parent Settings.</p>
+      <input id="pinInput" class="pin-input" inputmode="numeric" maxlength="8" aria-label="Parent PIN" />
+      <button class="primary" type="submit">Open settings</button>
+    </form>
+  </div>
+
+  <div id="parentModal" class="modal-backdrop" role="presentation" hidden>
+    <section class="modal settings-modal" role="dialog" aria-modal="true" aria-label="Parent settings">
+      <button id="parentCloseBtn" type="button" class="modal-close" data-close="parentModal" aria-label="Close">×</button>
+      <span class="eyebrow">PARENT SETTINGS</span>
+      <h2>Personalize SignSpeak Junior</h2>
+      <p class="muted">Keep the child’s main word locations familiar. Choose the voice and child-friendly options here.</p>
+
+      <div id="setupBanner" class="setup-banner" hidden>
+        <span class="setup-icon">👨‍👩‍👧</span>
+        <div><strong>First-time setup</strong><p>Choose the settings you want, then press <b>Save & Continue</b> to enter the child workspace.</p></div>
+        <button id="setupContinueBtn" type="button" class="primary setup-continue">Save & Continue →</button>
+      </div>
+
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>Voice & speaking</h3>
+          <label>Voice<select id="voiceSelect"><option value="">Automatic English voice</option></select></label>
+          <label>Speaking speed <strong id="rateValue">0.9×</strong><input id="rateRange" type="range" min="0.6" max="1.2" step="0.1" value="0.9" /></label>
+          <label class="toggle-row"><input id="autoSpeakToggle" type="checkbox" checked /> Speak each word when selected</label>
+          <label class="toggle-row"><input id="suggestionsToggle" type="checkbox" checked /> Show next-word suggestions</label>
+          <label class="toggle-row"><input id="focusToggle" type="checkbox" /> Focus mode (favorites + essential core words)</label>
+        </div>
+
+        <form id="customWordForm" class="settings-card">
+          <h3>Add a personal word</h3>
+          <label>Word / short phrase<input id="customWord" placeholder="Grandma" /></label>
+          <label>Pronunciation text<input id="customSpoken" placeholder="Leave blank to use the word" /></label>
+          <div class="form-row">
+            <label>Picture emoji<input id="customEmoji" value="⭐" maxlength="4" /></label>
+            <label>Category<select id="customCategory"></select></label>
+          </div>
+          <label>Or upload a familiar photo<input id="customImage" type="file" accept="image/*" /></label>
+          <img id="imagePreview" class="image-preview" alt="Custom preview" hidden />
+          <button class="primary" type="submit">+ Add word</button>
+        </form>
+
+        <div class="settings-card ai-settings-card">
+          <h3>✦ AI Helper</h3>
+          <label class="toggle-row"><input id="aiHelperToggle" type="checkbox" checked /> Enable on-device AI suggestions</label>
+          <label class="toggle-row"><input id="aiPersonalizeToggle" type="checkbox" checked /> Personalize suggestions using Favorites and Recent words</label>
+          <div class="ai-model-info">
+            <strong>Self-trained NLP model</strong>
+            <span>TF-IDF + Logistic Regression</span>
+            <span id="aiValidationText">Model validation loading…</span>
+          </div>
+          <p class="muted small">The AI predicts the communication intent, suggests next words and can reorder a short sentence. It supports communication; it does not diagnose a child.</p>
+        </div>
+
+        <div class="settings-card">
+          <h3>Parent PIN</h3>
+          <label>New PIN<input id="newPinInput" inputmode="numeric" /></label>
+          <p class="muted small">This is a simple child lock stored on this device, not strong security.</p>
+        </div>
+
+        <div class="settings-card">
+          <h3>Custom cards</h3>
+          <div id="customList" class="custom-list"><p class="muted">No custom words yet.</p></div>
+        </div>
+      </div>
+
+      <div class="photo-note"><strong>Picture cards:</strong> all 100 built-in words request a related online photograph. Internet is needed for the photos; if one fails, its emoji symbol appears automatically.</div>
+      <div class="parent-note"><strong>Design note:</strong> this app is a communication and language-practice prototype. Personalize vocabulary and visuals for the individual child.</div>
+
+      <div class="settings-actions">
+        <span>Changes are saved on this device.</span>
+        <button id="saveSettingsBtn" type="button" class="primary save-settings">✓ Save & Continue</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="./vocabulary.js?v=2.0.0" defer></script>
+  <script src="./ai_model.js?v=2.0.0" defer></script>
+  <script src="./ai_engine.js?v=2.0.0" defer></script>
+  <script src="./app.js?v=2.0.0" defer></script>
+</body>
+</html>
